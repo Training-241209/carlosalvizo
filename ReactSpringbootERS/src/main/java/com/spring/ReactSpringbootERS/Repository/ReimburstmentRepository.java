@@ -6,10 +6,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.spring.ReactSpringbootERS.Entity.Reimburstment;
+import com.spring.ReactSpringbootERS.Entity.User;
 
 public interface ReimburstmentRepository extends JpaRepository<Reimburstment, Integer> {
     
-    List<Reimburstment> findByUserId(Integer userId);
+    List<Reimburstment> findByUser(User user);
 
     Optional<Reimburstment> findById(Integer reimbId);
 
