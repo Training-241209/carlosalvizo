@@ -1,5 +1,6 @@
 package com.spring.ReactSpringbootERS.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.spring.ReactSpringbootERS.DTOs.ReimburstmentsDTO;
+import com.spring.ReactSpringbootERS.DTOs.UsersDTO;
 import com.spring.ReactSpringbootERS.Entity.Reimburstment;
 import com.spring.ReactSpringbootERS.Entity.User;
 
@@ -31,12 +34,25 @@ public class ReimburstmentService {
         this.reimburstmentRepository = reimburstmentRepository;
     }
 
-    public List<Reimburstment> getAllReimburstments(){
-        return reimburstmentRepository.findAll();
+    public List<ReimburstmentsDTO> getAllReimburstments(){
+        List<Reimburstment> reimb = reimburstmentRepository.findAll();
+        List<ReimburstmentsDTO> reimburstmentsDTO = new ArrayList<>();
+        for (Reimburstment re : reimb) {
+            UsersDTO user = new UsersDTO(re.getUser().getFirstName(), re.getUser().getLastName(), re.getUser().getEmail());
+            reimburstmentsDTO.add(new ReimburstmentsDTO(re.getReimbId(),re.getDescription(), re.getAmount(), re.getStatus(), user));
+        }
+        return reimburstmentsDTO;
     }
 
     public List<Reimburstment> getReimburstmentsByUserId(User user){
-        return reimburstmentRepository.findByUserId(user.getUserId());
+        return reimburstmentRepository.findByUser(user);
+    }
+
+    public String getUserRole(User user) {
+        if (user.getRole() != null) {
+            return user.getRole().getRoleName();
+        }
+        throw new IllegalStateException("User does not have a role assigned.");
     }
 
     public Reimburstment addReimburstments(String token, Reimburstment reimburstment){
@@ -51,12 +67,12 @@ public class ReimburstmentService {
 
         User user = userRepository.findByEmail(userToken.getEmail());
 
-        if("employee".equals(user.getRole())){
+        if("employee".equals(getUserRole(user))){
             Reimburstment newReimburstments = new Reimburstment();
             newReimburstments.setDescription(reimburstment.getDescription());
             newReimburstments.setAmount(reimburstment.getAmount());
             newReimburstments.setStatus("Pending");
-            newReimburstments.setUserId(user.getUserId());
+            newReimburstments.setUser(user);
             reimburstmentRepository.save(newReimburstments);
             return newReimburstments;
         }
@@ -78,7 +94,7 @@ public class ReimburstmentService {
 
         User user = userRepository.findByEmail(adminToken.getEmail());
 
-        if("manager".equals(user.getRole())){
+        if("manager".equals(getUserRole(user))){
             Optional<Reimburstment> reimburstment = reimburstmentRepository.findById(reimbId);
             if(reimburstment.isPresent()){
                 Reimburstment temp = reimburstment.get();

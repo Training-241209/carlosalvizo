@@ -1,5 +1,7 @@
 package com.spring.ReactSpringbootERS.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,10 +15,12 @@ public class Reimburstment {
     private Integer reimbId;
 
     private String description;
-    private Integer amount;
+    private Double amount;
     private String status;
     
-    @Column(name = "user_id")
-    private Integer userId;
+    @ManyToOne
+    @JoinColumn(name = "user_Id")
+    @JsonBackReference
+    private User user;
 
 }
