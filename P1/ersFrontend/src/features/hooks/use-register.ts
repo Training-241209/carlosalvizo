@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { RegisterSchema } from "../schemas/registerSchema";
 import { axiosInstance } from "@/lib/axios-config";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { useRouter } from "@tanstack/react-router";
 export function useRegister(){
 
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (values: RegisterSchema) => {
@@ -17,9 +18,12 @@ export function useRegister(){
         onSuccess: () => {
             toast.success("Registered successfuly.");
             router.navigate({ to: "/auth/login"});
+            queryClient.invalidateQueries({
+                queryKey: ["users"],
+              });
         },
-        onError: () => {
-            toast.error("Failed to register.");
+        onError: (e: any) => {
+            toast.error(e.response?.data);
         },
     })
 }

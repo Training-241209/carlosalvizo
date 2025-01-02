@@ -28,7 +28,8 @@ export function SidebarUI() {
 
   if (auth?.role == "employee") {
     return (
-      <aside className="w-[270px] max-w-xs h-screen fixed left-0 top-[64px] z-40 border-r-6 bg-slate-500 text-white">
+      //sticky?
+      <aside className="w-[270px] max-w-xs  min-h-[calc(100vh-65px)] fixed left-0 top-[64px] z-40 border-r-6 bg-slate-500 text-white">
         <div className="h-full px-3 py-4">
           <h3 className="mx-3 text-3xl font-semibold">ERS</h3>
 

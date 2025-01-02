@@ -36,12 +36,12 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("register")
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<?> createUser(@RequestBody User user){
         try{
             User newUser = userService.addUser(user);
             return ResponseEntity.ok().body(newUser);
         }catch(UniqueEmailException ex){
-            return ResponseEntity.status(409).build();
+            return ResponseEntity.status(409).body("Error: Email already registered.");
         }
     }
 

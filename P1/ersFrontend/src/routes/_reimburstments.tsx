@@ -1,6 +1,5 @@
 import { SidebarUI } from "@/components/shared/sidebardui";
 import { UserDropdown } from "@/components/shared/userdropdown";
-import { AddReimburstment } from "@/features/components/addreimburstment";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_reimburstments")({
