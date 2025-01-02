@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.spring.ReactSpringbootERS.Entity.Reimburstment;
 import com.spring.ReactSpringbootERS.Entity.User;
 
@@ -14,4 +13,5 @@ public interface ReimburstmentRepository extends JpaRepository<Reimburstment, In
 
     Optional<Reimburstment> findById(Integer reimbId);
 
+    List<Reimburstment> findAllByUser(User user);
 }

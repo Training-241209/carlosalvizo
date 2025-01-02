@@ -13,11 +13,24 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ReimburstmentsImport } from './routes/_reimburstments'
+import { Route as ProtectedImport } from './routes/_protected'
+import { Route as EmployeesImport } from './routes/_employees'
 
 // Create Virtual Routes
 
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
+const ReimburstmentsReimburstmentsLazyImport = createFileRoute(
+  '/_reimburstments/reimburstments',
+)()
+const ReimburstmentsAddreimburstmentLazyImport = createFileRoute(
+  '/_reimburstments/addreimburstment',
+)()
+const ProtectedDashboardLazyImport = createFileRoute('/_protected/dashboard')()
+const EmployeesEmployeesLazyImport = createFileRoute('/_employees/employees')()
+const AuthAuthRegisterLazyImport = createFileRoute('/_auth/auth/register')()
+const AuthAuthLoginLazyImport = createFileRoute('/_auth/auth/login')()
 
 // Create/Update Routes
 
@@ -27,11 +40,78 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
+const ReimburstmentsRoute = ReimburstmentsImport.update({
+  id: '/_reimburstments',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProtectedRoute = ProtectedImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EmployeesRoute = EmployeesImport.update({
+  id: '/_employees',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const ReimburstmentsReimburstmentsLazyRoute =
+  ReimburstmentsReimburstmentsLazyImport.update({
+    id: '/reimburstments',
+    path: '/reimburstments',
+    getParentRoute: () => ReimburstmentsRoute,
+  } as any).lazy(() =>
+    import('./routes/_reimburstments/reimburstments.lazy').then((d) => d.Route),
+  )
+
+const ReimburstmentsAddreimburstmentLazyRoute =
+  ReimburstmentsAddreimburstmentLazyImport.update({
+    id: '/addreimburstment',
+    path: '/addreimburstment',
+    getParentRoute: () => ReimburstmentsRoute,
+  } as any).lazy(() =>
+    import('./routes/_reimburstments/addreimburstment.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const ProtectedDashboardLazyRoute = ProtectedDashboardLazyImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/dashboard.lazy').then((d) => d.Route),
+)
+
+const EmployeesEmployeesLazyRoute = EmployeesEmployeesLazyImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => EmployeesRoute,
+} as any).lazy(() =>
+  import('./routes/_employees/employees.lazy').then((d) => d.Route),
+)
+
+const AuthAuthRegisterLazyRoute = AuthAuthRegisterLazyImport.update({
+  id: '/_auth/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/auth/register.lazy').then((d) => d.Route),
+)
+
+const AuthAuthLoginLazyRoute = AuthAuthLoginLazyImport.update({
+  id: '/_auth/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/auth/login.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -44,6 +124,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_employees': {
+      id: '/_employees'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof EmployeesImport
+      parentRoute: typeof rootRoute
+    }
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ProtectedImport
+      parentRoute: typeof rootRoute
+    }
+    '/_reimburstments': {
+      id: '/_reimburstments'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ReimburstmentsImport
+      parentRoute: typeof rootRoute
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -51,44 +152,188 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_employees/employees': {
+      id: '/_employees/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof EmployeesEmployeesLazyImport
+      parentRoute: typeof EmployeesImport
+    }
+    '/_protected/dashboard': {
+      id: '/_protected/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof ProtectedDashboardLazyImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_reimburstments/addreimburstment': {
+      id: '/_reimburstments/addreimburstment'
+      path: '/addreimburstment'
+      fullPath: '/addreimburstment'
+      preLoaderRoute: typeof ReimburstmentsAddreimburstmentLazyImport
+      parentRoute: typeof ReimburstmentsImport
+    }
+    '/_reimburstments/reimburstments': {
+      id: '/_reimburstments/reimburstments'
+      path: '/reimburstments'
+      fullPath: '/reimburstments'
+      preLoaderRoute: typeof ReimburstmentsReimburstmentsLazyImport
+      parentRoute: typeof ReimburstmentsImport
+    }
+    '/_auth/auth/login': {
+      id: '/_auth/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthAuthLoginLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/auth/register': {
+      id: '/_auth/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthAuthRegisterLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
+interface EmployeesRouteChildren {
+  EmployeesEmployeesLazyRoute: typeof EmployeesEmployeesLazyRoute
+}
+
+const EmployeesRouteChildren: EmployeesRouteChildren = {
+  EmployeesEmployeesLazyRoute: EmployeesEmployeesLazyRoute,
+}
+
+const EmployeesRouteWithChildren = EmployeesRoute._addFileChildren(
+  EmployeesRouteChildren,
+)
+
+interface ProtectedRouteChildren {
+  ProtectedDashboardLazyRoute: typeof ProtectedDashboardLazyRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedDashboardLazyRoute: ProtectedDashboardLazyRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
+interface ReimburstmentsRouteChildren {
+  ReimburstmentsAddreimburstmentLazyRoute: typeof ReimburstmentsAddreimburstmentLazyRoute
+  ReimburstmentsReimburstmentsLazyRoute: typeof ReimburstmentsReimburstmentsLazyRoute
+}
+
+const ReimburstmentsRouteChildren: ReimburstmentsRouteChildren = {
+  ReimburstmentsAddreimburstmentLazyRoute:
+    ReimburstmentsAddreimburstmentLazyRoute,
+  ReimburstmentsReimburstmentsLazyRoute: ReimburstmentsReimburstmentsLazyRoute,
+}
+
+const ReimburstmentsRouteWithChildren = ReimburstmentsRoute._addFileChildren(
+  ReimburstmentsRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '': typeof ReimburstmentsRouteWithChildren
   '/about': typeof AboutLazyRoute
+  '/employees': typeof EmployeesEmployeesLazyRoute
+  '/dashboard': typeof ProtectedDashboardLazyRoute
+  '/addreimburstment': typeof ReimburstmentsAddreimburstmentLazyRoute
+  '/reimburstments': typeof ReimburstmentsReimburstmentsLazyRoute
+  '/auth/login': typeof AuthAuthLoginLazyRoute
+  '/auth/register': typeof AuthAuthRegisterLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '': typeof ReimburstmentsRouteWithChildren
   '/about': typeof AboutLazyRoute
+  '/employees': typeof EmployeesEmployeesLazyRoute
+  '/dashboard': typeof ProtectedDashboardLazyRoute
+  '/addreimburstment': typeof ReimburstmentsAddreimburstmentLazyRoute
+  '/reimburstments': typeof ReimburstmentsReimburstmentsLazyRoute
+  '/auth/login': typeof AuthAuthLoginLazyRoute
+  '/auth/register': typeof AuthAuthRegisterLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/_employees': typeof EmployeesRouteWithChildren
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/_reimburstments': typeof ReimburstmentsRouteWithChildren
   '/about': typeof AboutLazyRoute
+  '/_employees/employees': typeof EmployeesEmployeesLazyRoute
+  '/_protected/dashboard': typeof ProtectedDashboardLazyRoute
+  '/_reimburstments/addreimburstment': typeof ReimburstmentsAddreimburstmentLazyRoute
+  '/_reimburstments/reimburstments': typeof ReimburstmentsReimburstmentsLazyRoute
+  '/_auth/auth/login': typeof AuthAuthLoginLazyRoute
+  '/_auth/auth/register': typeof AuthAuthRegisterLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | ''
+    | '/about'
+    | '/employees'
+    | '/dashboard'
+    | '/addreimburstment'
+    | '/reimburstments'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | ''
+    | '/about'
+    | '/employees'
+    | '/dashboard'
+    | '/addreimburstment'
+    | '/reimburstments'
+    | '/auth/login'
+    | '/auth/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/_employees'
+    | '/_protected'
+    | '/_reimburstments'
+    | '/about'
+    | '/_employees/employees'
+    | '/_protected/dashboard'
+    | '/_reimburstments/addreimburstment'
+    | '/_reimburstments/reimburstments'
+    | '/_auth/auth/login'
+    | '/_auth/auth/register'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  EmployeesRoute: typeof EmployeesRouteWithChildren
+  ProtectedRoute: typeof ProtectedRouteWithChildren
+  ReimburstmentsRoute: typeof ReimburstmentsRouteWithChildren
   AboutLazyRoute: typeof AboutLazyRoute
+  AuthAuthLoginLazyRoute: typeof AuthAuthLoginLazyRoute
+  AuthAuthRegisterLazyRoute: typeof AuthAuthRegisterLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  EmployeesRoute: EmployeesRouteWithChildren,
+  ProtectedRoute: ProtectedRouteWithChildren,
+  ReimburstmentsRoute: ReimburstmentsRouteWithChildren,
   AboutLazyRoute: AboutLazyRoute,
+  AuthAuthLoginLazyRoute: AuthAuthLoginLazyRoute,
+  AuthAuthRegisterLazyRoute: AuthAuthRegisterLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -102,14 +347,60 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about"
+        "/_employees",
+        "/_protected",
+        "/_reimburstments",
+        "/about",
+        "/_auth/auth/login",
+        "/_auth/auth/register"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
+    "/_employees": {
+      "filePath": "_employees.tsx",
+      "children": [
+        "/_employees/employees"
+      ]
+    },
+    "/_protected": {
+      "filePath": "_protected.tsx",
+      "children": [
+        "/_protected/dashboard"
+      ]
+    },
+    "/_reimburstments": {
+      "filePath": "_reimburstments.tsx",
+      "children": [
+        "/_reimburstments/addreimburstment",
+        "/_reimburstments/reimburstments"
+      ]
+    },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/_employees/employees": {
+      "filePath": "_employees/employees.lazy.tsx",
+      "parent": "/_employees"
+    },
+    "/_protected/dashboard": {
+      "filePath": "_protected/dashboard.lazy.tsx",
+      "parent": "/_protected"
+    },
+    "/_reimburstments/addreimburstment": {
+      "filePath": "_reimburstments/addreimburstment.lazy.tsx",
+      "parent": "/_reimburstments"
+    },
+    "/_reimburstments/reimburstments": {
+      "filePath": "_reimburstments/reimburstments.lazy.tsx",
+      "parent": "/_reimburstments"
+    },
+    "/_auth/auth/login": {
+      "filePath": "_auth/auth/login.lazy.tsx"
+    },
+    "/_auth/auth/register": {
+      "filePath": "_auth/auth/register.lazy.tsx"
     }
   }
 }

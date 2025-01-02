@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 export const registerSchema = z.object({
@@ -6,7 +5,11 @@ export const registerSchema = z.object({
     .string({
       message: "Email is required",
     })
-    .min(1, "Email is required"),
+    .min(1, "Email is required")
+    .regex(
+      /^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      "Enter a valid email address"
+    ),
   password: z
     .string({
       message: "Password is required",

@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,9 +15,12 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { registerSchema, RegisterSchema } from "@/features/schemas/registerSchema"
+import { useRegister } from "@/features/hooks/use-register"
 
 export function RegisterForm() {
-  // 1. Define your form.
+
+  const { mutate: register, isPending } = useRegister();
+
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -29,11 +31,9 @@ export function RegisterForm() {
     },
   })
  
-  // 2. Define a submit handler.
+
   function onSubmit(values: RegisterSchema) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    register(values)
   }
 
   return (
@@ -97,7 +97,7 @@ export function RegisterForm() {
                   )}
                 />
 
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit" className="w-full" disabled={isPending}> Submit </Button>
 
       </form>
     </Form>

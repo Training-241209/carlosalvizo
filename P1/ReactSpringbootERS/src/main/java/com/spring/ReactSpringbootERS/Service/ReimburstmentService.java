@@ -34,18 +34,34 @@ public class ReimburstmentService {
         this.reimburstmentRepository = reimburstmentRepository;
     }
 
-    public List<ReimburstmentsDTO> getAllReimburstments(){
-        List<Reimburstment> reimb = reimburstmentRepository.findAll();
-        List<ReimburstmentsDTO> reimburstmentsDTO = new ArrayList<>();
-        for (Reimburstment re : reimb) {
-            UsersDTO user = new UsersDTO(re.getUser().getFirstName(), re.getUser().getLastName(), re.getUser().getEmail());
-            reimburstmentsDTO.add(new ReimburstmentsDTO(re.getReimbId(),re.getDescription(), re.getAmount(), re.getStatus(), user));
+    public List<ReimburstmentsDTO> getAllReimburstments(String token){
+        User userToken = jwtService.decodeToken(token);
+        User userEmail = userRepository.findByEmail(userToken.getEmail());
+
+        if("manager".equals(getUserRole(userEmail))){
+            List<Reimburstment> reimb = reimburstmentRepository.findAll();
+            List<ReimburstmentsDTO> reimburstmentsDTO = new ArrayList<>();
+            for (Reimburstment re : reimb) {
+                UsersDTO user = new UsersDTO(re.getUser().getFirstName(), re.getUser().getLastName());
+                if(re.getStatus().equals("Pending")){
+                    reimburstmentsDTO.add(new ReimburstmentsDTO(re.getReimbId(),re.getDescription(), re.getAmount(), re.getStatus(), user));
+                }
+            }
+            return reimburstmentsDTO;
         }
-        return reimburstmentsDTO;
+        else{
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not an employee");
+        }
     }
 
-    public List<Reimburstment> getReimburstmentsByUserId(User user){
-        return reimburstmentRepository.findByUser(user);
+    public List<ReimburstmentsDTO> getReimburstmentsByUser(String token){
+        User userToken = jwtService.decodeToken(token);
+        List<Reimburstment> reimburstments = reimburstmentRepository.findAllByUser(userToken);
+        List<ReimburstmentsDTO> reimburstmentsDTO = new ArrayList<>();
+        for (Reimburstment re : reimburstments) {
+            reimburstmentsDTO.add(new ReimburstmentsDTO(re.getReimbId(),re.getDescription(), re.getAmount(), re.getStatus()));
+        }
+        return reimburstmentsDTO;
     }
 
     public String getUserRole(User user) {
@@ -81,24 +97,22 @@ public class ReimburstmentService {
         }
     }
 
-    public Reimburstment updateReimburstment(String token, Integer reimbId){
+    public Reimburstment updateReimburstment(String token, Integer reimbId, String status){
 
         User adminToken;
-
         try {
             adminToken = jwtService.decodeToken(token);
             
         } catch (JwtException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token");
         }
-
         User user = userRepository.findByEmail(adminToken.getEmail());
 
         if("manager".equals(getUserRole(user))){
             Optional<Reimburstment> reimburstment = reimburstmentRepository.findById(reimbId);
             if(reimburstment.isPresent()){
                 Reimburstment temp = reimburstment.get();
-                temp.setStatus("Approved");
+                temp.setStatus(status);
                 reimburstmentRepository.save(temp);
                 return temp;
             }

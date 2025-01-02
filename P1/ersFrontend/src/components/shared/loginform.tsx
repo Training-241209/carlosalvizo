@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,9 +15,12 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { loginSchema, LoginSchema } from "@/features/schemas/loginShema"
+import { useLogin } from "@/features/hooks/use-login"
 
 export function LoginForm() {
-  // 1. Define your form.
+
+  const { mutate: login, isPending } = useLogin();
+  
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -27,11 +29,9 @@ export function LoginForm() {
     },
   })
  
-  // 2. Define a submit handler.
+
   function onSubmit(values: LoginSchema) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+    login(values);
   }
 
   return (
@@ -65,7 +65,7 @@ export function LoginForm() {
                   )}
                 />
 
-                  <Button type="submit">Submit</Button>
+                  <Button type="submit" className="w-full" disabled={isPending}>Submit</Button>
 
       </form>
     </Form>

@@ -10,6 +10,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.crypto.SecretKey;
 
@@ -19,36 +21,32 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    private final Set<String> invalidTokens = new HashSet<>();
+
+    public void invalidateToken(String token) {
+        invalidTokens.add(token);
+    }
+
+    public boolean isTokenInvalid(String token) {
+        return invalidTokens.contains(token);
+    }
+
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    /**
-     * Generates a JWT token for the specified user.
-     *
-     * @param user the user for whom the token is to be generated
-     * @return a JWT token as a String
-     */
     @SuppressWarnings("deprecation")
     public String generateToken(User user) {
         return Jwts.builder()
                 .claim("id", user.getUserId())
                 .claim("email", user.getEmail())
-                // Add other fields
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // 15 minutes
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(getSigningKey())
                 .compact();
     }
 
-    /**
-     * Decodes the given JWT token and retrieves the subject (email) from it.
-     *
-     * @param token the JWT token to decode
-     * @return the subject (email) contained in the token
-     * @throws io.jsonwebtoken.JwtException if the token is invalid or expired
-     */
     public User decodeToken(String token) {
         @SuppressWarnings("deprecation")
         var claims = Jwts.parser()
